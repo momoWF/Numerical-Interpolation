@@ -29,7 +29,7 @@
 #include "list.h"
 #include "points.h"
 #include "picker.h"
-//#include "Matriz.hpp"
+#include "Matriz.hpp"
 #include "Spline.hpp"
 #include "Lagrange.hpp"
 
@@ -40,16 +40,19 @@ picker Picker;
 float *xMtx,*yMtx;
 int n;
 
-//Polinomio *polinomioLagrange = NULL;
+Polinomio *polinomio = NULL;
 Lagrange *lagrange = NULL;
 Spline *spline = NULL;
+int nAnteriorLin = 0;
 int nAnteriorL = 0;
 int nAnteriorS = 0;
 int seletor = 0;
 int N_PONTOS_NO_GRAFICO = 1000;
 
+float InterpolationLinearSystem(float *x,float *y, int N, float t);
 float InterpolationLagrange(float *x,float *y, int N, float t);
 float InterpolationSpline(float *x,float *y, int N, float t);
+void DrawInterpolationLinearSystem(void);
 void DrawInterpolationLagrange(void);
 void DrawInterpolationSpline(void);
 
@@ -62,6 +65,24 @@ GLint		draw_yes	= 0;
 GLint		take_points = 1;
 
 //===================================================================//
+float InterpolationLinearSystem(float *x,float *y, int N, float t){
+	if (N == 1 || N != nAnteriorLin){
+		Matriz matriz(N,2);
+		for (int c = 0 ; c < N ; c++){
+			matriz.setElementos(c,0,x[c]);
+			matriz.setElementos(c,1,y[c]);
+		}
+		matriz.interpolar(&polinomio);
+		nAnteriorLin = N;
+		cout << endl;
+		cout << "Polinômio pela Forma Linear: ";
+		polinomio->imprimir();
+		cout << endl;
+	}
+
+	return polinomio->getValor(t);
+}
+
 float InterpolationLagrange(float *x,float *y, int N, float t){
 	if (N == 1 || N != nAnteriorL){
 		double *vetorX = new double[N];
@@ -92,6 +113,33 @@ float InterpolationSpline(float *x,float *y, int N, float t){
 	return resultado;
 }
 //===================================================================//
+void DrawInterpolationLinearSystem(void){
+	float dt = ( xMtx[n-1] - xMtx[0] )/1000;
+	float x0,y0,x1,y1;
+
+	x0 = xMtx[0];
+	y0 = yMtx[0];
+
+	glColor3f(0.0f, 1.0f, 0.0f);	// Verde
+	glLineWidth(2.0f);
+
+	for(int i=0; i<N_PONTOS_NO_GRAFICO; i++){
+
+		x1 = x0 + dt;
+		y1 = InterpolationLinearSystem(xMtx,yMtx,n,x1);
+
+		glBegin(GL_LINES);
+			glVertex2f(x0,y0);
+			glVertex2f(x1,y1);
+		glEnd();
+
+		x0 = x1;
+		y0 = y1;
+	}
+
+	glLineWidth(1.0f);
+}
+
 void DrawInterpolationLagrange(void){
 	float dt = ( xMtx[n-1] - xMtx[0] )/1000;
 	float x0,y0,x1,y1;
@@ -344,10 +392,20 @@ void myDisplayFunc(){
 			case 2:
 				DrawInterpolationSpline();
 				break;
-			default:
+			case 3:
 				DrawInterpolationLagrange();
 				DrawInterpolationSpline();
 				break;
+			case 4:
+				DrawInterpolationLinearSystem();
+				break;
+			case 5:
+				DrawInterpolationLagrange();
+				DrawInterpolationSpline();
+				DrawInterpolationLinearSystem();
+				break;
+			default:
+				DrawInterpolationLagrange();
 		}
 	}
 
@@ -363,10 +421,12 @@ int main (int argc, char ** argv){
 	cout << "Problema 1: Interpolação utilizando a Forma de Lagrange" << endl;
 	cout << "Problema 2: Interpolação utilizando Spline Cúbica Natural" << endl;
 	cout << "Extra (3): Interpolação utilizando Forma de Lagrange e Spline Cúbica Natural ao mesmo tempo" << endl;
+	cout << "Extra (4): Interpolação utilizando Sistema Linear - Força Bruta - Matriz" << endl;
+	cout << "Extra (5): Interpolação utilizando Todos acima" << endl;
 	do {
 		cout << "Digite o número do problema que deseja resolver: " ;
 		cin >> seletor;
-	} while (seletor > 3 || seletor < 1);
+	} while (seletor > 5 || seletor < 1);
 
 	cout << "A Forma de Lagrange tem linha de cor vermelha." << endl;
 	cout << "A Spline Cúbica Natural tem linha de cor azul." << endl;
