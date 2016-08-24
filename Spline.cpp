@@ -50,8 +50,6 @@ void Spline::calcularG(){
 		g[c]=g[c]*g[c+1]+aux[c];
 }
 
-/*Given a value x, and using pointers to data xx and yy, and the stored vector of second derivatives
-y2, this routine returns the cubic spline interpolated value y.*/
 double Spline::interpolar(double x) {
 	int loc = localizar(x);
 	int kMenor=loc,kMaior=loc+1;

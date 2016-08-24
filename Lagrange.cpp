@@ -54,12 +54,10 @@ double Lagrange::interpolar(const double &x){
 	//Polinomio *polinomio = new Polinomio(getTamanho());
 	double resultado = 0;
 	double Li = 0;
-	cout << "---1" << endl;
 	for (int c = 0; c < getTamanho(); c++){
 		Li = (pi(x)/((x-getX(c))*D(c)));
 		resultado += (getY(c)*Li);
 	}
-	cout << "---2" << endl;
 	return resultado;
 }
 

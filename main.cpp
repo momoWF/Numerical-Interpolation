@@ -38,10 +38,11 @@ GLint antialiasing		  = 1;
 picker Picker;
 
 float *xMtx,*yMtx;
+int n;
+
 //Polinomio *polinomioLagrange = NULL;
 Lagrange *lagrange = NULL;
 Spline *spline = NULL;
-int n;
 int nAnteriorL = 0;
 int nAnteriorS = 0;
 int seletor = 0;
@@ -62,24 +63,17 @@ GLint		take_points = 1;
 
 //===================================================================//
 float InterpolationLagrange(float *x,float *y, int N, float t){
-	cout << "TT0" << endl;
 	if (N == 1 || N != nAnteriorL){
-		cout << "TT2 n: " << N <<  endl;
 		double *vetorX = new double[N];
 		double *vetorY = new double[N];
-		cout << "--T1" << endl;
 		for (int c = 0 ; c < N ; c++){
 			vetorX[c] = x[c];
 			vetorY[c] = y[c];
 		}
-		cout << "--T2" << endl;
 		nAnteriorL = N;
 		delete lagrange;
-		cout << "--T5" << endl;
 		lagrange = new Lagrange(N, vetorX, vetorY);
-		cout << "--T6" << endl;
 	}
-	cout << "TT3" << endl;
 	return lagrange->interpolar(t);
 }
 float InterpolationSpline(float *x,float *y, int N, float t){
