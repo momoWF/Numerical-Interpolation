@@ -1,0 +1,128 @@
+Instruções para Compilação do Projeto
+-------------------------------------
+
+	Antes de mais nada é necessário saber que  os  projetos
+que estão juntos ocm este arquivo, dependem da biblioteca  grá-
+fica Glut.h que é uma versão simplificada da biblioteca OpenGL.
+ 
+	A instalação  desta  biblioteca  varia de ambiente para 
+ambiente. Desta forma, preparei três opções baseadas nos  ambi-
+entes de programação: Dev C++, Visual Studio .NEt  2003  e  Vi-
+sual Studio 2005.
+
+1. Dev C++
+==========
+
+	Na pasta "GLut Install", encontra-se a pasta "Dev-Cpp."
+   e dentro dela está o arquivo 
+                          
+ 		        "installDevCpp.bat"
+
+   Clique  duas  vezes  neste  arquivo  com o botão esquerdo do
+   mouse. Este arquivo irá colocar os arquivos que estão  nesta
+   pasta nos devidos lugares e a instalação da biblioteca  está
+   concluida. Na pasta "Interpolation", existe uma pasta chama-
+   da  "Dev-Cpp"  e dentro dela está o projeto 
+
+			"Numerico.dev"
+
+   pronto para ser usado. Use-o!
+
+
+2. Visual Studio .Net 2003
+==========================
+
+	Na  pasta  "GLut Install",  encontra-se a pasta "Visual
+   Studio .NET 2003". Dentro dela está o arquivo 
+                          
+ 		        "installVS2003.bat"
+
+   Clique  duas  vezes  neste  arquivo  com o botão esquerdo do
+   mouse. Este arquivo irá colocar os arquivos que estão  nesta
+   pasta nos devidos lugares e a instalação da biblioteca  está
+   concluida.
+
+3. Visual Studio 2005
+=====================
+
+	Na  pasta  "GLut Install",  encontra-se a pasta "Visual
+   Studio 2005". Dentro dela está o arquivo 
+                          
+ 		        "installVS2005.bat"
+
+   Clique  duas  vezes  neste  arquivo  com o botão esquerdo do
+   mouse. Este arquivo irá colocar os arquivos que estão  nesta
+   pasta nos devidos lugares e a instalação da biblioteca  está
+   concluida. Na pasta "Interpolation", existe uma pasta chama-
+   da "Visual Studio 2005" e dentro dela está o projeto 
+
+			"Numerico.sln"
+
+   pronto para ser usado. Use-o!
+
+ 
+Obs.: Para aqueles que trabalham com outro ambiente  de progra-
+      mação a instalação não  é  complicada e caso queiram adi-
+      cionar as instruções a este arquivo, ficaria grato se pu-
+      dessem me enviá-lo com esta modificação. Podem enviar pa-
+      ra: edson_la@yahoo.com.br
+	
+
+Instruções para Programação dos Métodos
+---------------------------------------
+
+	Nos projetos que criei, existem arquivos .cpp e .h  que 
+são necessários para o programa mas, apenas o arquivo 
+
+                      "main.cpp" 
+
+deve  ser  alterado  por vocês. Neste arquivo existe uma função 
+cujo protótipo é o seguinte:
+
+" float InterpolationMethod(float *x,float *y, int n, float t)"
+
+O argumentos desta função são os sguintes:
+
+float *x:
+ 
+	Embora esteja na forma de ponteiro, na verdade trata-se
+        da matriz que contém  as abcissas  dos pontos que foram
+        clicados pelo usuário. Ela comtém "n"  floats  onde "n"
+        é o terceiro argumento desta mesma função.
+	Cada elemento desta matriz pode ser acessado da seguin-
+        te maneira: x[0], x[1], x[2], ..., x[n-1].
+
+
+float *y:
+ 
+	Da mesma forma, este argumento também está na forma  de
+        ponteiro  mas trata-se da matriz que contém  as ordena-
+        das  dos  pontos  que  foram clicados pelo usuário. Ela
+        contém  "n"   floats   onde  "n" é o terceiro argumento 
+        desta mesma função.
+	Cada elemento desta matriz pode ser acessado da seguin-
+        te maneira: y[0], y[1], y[2], ...,,y[n-1].
+
+int n:
+
+	Este argumento indica quantos pontos foram clicados pe-
+        lo usuário.
+
+float t:
+
+	Este é o valor onde se deseja calcular a interpolação.
+
+	
+	Pronto! Tudo que vocês precisam está nesta função, po-
+dem usar como se vocês soubessem cada valor. Não alterem  nada
+mais no código pois com isto podem prejudicar o  programa  por
+inteiro. Estejam livre para criarem outras funções, isto   não
+prejudica em nada o código. Só tomem o cuidado de não utiliza-
+rem as variáveis gloabais que já existem. Já  confirmei  se  o 
+código está ok através do método de Lagrange, tudo foi beleza.  
+Agora é com vocês! Boa sorte! 
+
+                                                   Prof. Edson
+
+
+  

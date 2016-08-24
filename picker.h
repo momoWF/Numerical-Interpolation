@@ -1,7 +1,7 @@
 #ifndef _PICKER_H_
 #define _PICKER_H_
 
-#include <GL\glut.h>
+#include <GL/glut.h>
 
 #include <stdlib.h>
 #include <stdarg.h>

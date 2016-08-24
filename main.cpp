@@ -8,6 +8,17 @@
 //#define _STDCALL_SUPPORTED
 //#define _M_IX86
 
+/*
+ * Universidade Federal do Vale do São Francisco
+ * Trabalho de Cálculo Numérico - Integração Numérica
+ * Professor: Edson Leite Araújo
+ * Alunos:	Rayssa Carvalho da Silva
+ * 			Ricardo Figueiredo de Oliveira
+ *			Ricardo Valério Teixeira de Medeiros Silva
+ *			Ruan de Medeiros Bahia
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -18,45 +29,89 @@
 #include "list.h"
 #include "points.h"
 #include "picker.h"
-
+//#include "Matriz.hpp"
+#include "Spline.hpp"
+#include "Lagrange.hpp"
 
 GLint antialiasing		  = 1;
 
 picker Picker;
 
 float *xMtx,*yMtx;
+//Polinomio *polinomioLagrange = NULL;
+Lagrange *lagrange = NULL;
+Spline *spline = NULL;
 int n;
+int nAnteriorL = 0;
+int nAnteriorS = 0;
+int seletor = 0;
+int N_PONTOS_NO_GRAFICO = 1000;
+
+float InterpolationLagrange(float *x,float *y, int N, float t);
+float InterpolationSpline(float *x,float *y, int N, float t);
+void DrawInterpolationLagrange(void);
+void DrawInterpolationSpline(void);
 
 //===== Global Variables ===========================================//
 
-GLint		width		= 400;
-GLint		height		= 400;
+GLint		width		= 640;
+GLint		height		= 480;
 
 GLint		draw_yes	= 0;
 GLint		take_points = 1;
 
 //===================================================================//
-float InterpolationMethod(float *x,float *y, int n, float t){
-
-	// Inserir Código para o Método de Interpolação Aqui!!!!
-	return 0.0f;
+float InterpolationLagrange(float *x,float *y, int N, float t){
+	cout << "TT0" << endl;
+	if (N == 1 || N != nAnteriorL){
+		cout << "TT2 n: " << N <<  endl;
+		double *vetorX = new double[N];
+		double *vetorY = new double[N];
+		cout << "--T1" << endl;
+		for (int c = 0 ; c < N ; c++){
+			vetorX[c] = x[c];
+			vetorY[c] = y[c];
+		}
+		cout << "--T2" << endl;
+		nAnteriorL = N;
+		delete lagrange;
+		cout << "--T5" << endl;
+		lagrange = new Lagrange(N, vetorX, vetorY);
+		cout << "--T6" << endl;
+	}
+	cout << "TT3" << endl;
+	return lagrange->interpolar(t);
+}
+float InterpolationSpline(float *x,float *y, int N, float t){
+	double resultado;
+	if (N == 1 || N != nAnteriorS){
+		vector<double> vetorX(N), vetorY(N);
+		for (int c = 0; c < N; c++){
+			vetorX[c] = x[c];
+			vetorY[c] = y[c];
+		}
+		nAnteriorS = N;
+		delete spline;
+		spline = new Spline(vetorX, vetorY, N);
+	}
+	resultado = spline->interpolar(t);
+	return resultado;
 }
 //===================================================================//
-void DrawInterpolation(void){
-
+void DrawInterpolationLagrange(void){
 	float dt = ( xMtx[n-1] - xMtx[0] )/1000;
 	float x0,y0,x1,y1;
 
 	x0 = xMtx[0];
 	y0 = yMtx[0];
 
-	glColor3f(1.0f, .5f, 0.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);	// Vermelho
 	glLineWidth(2.0f);
 
-	for(int i=0; i<1000; i++){
+	for(int i=0; i<N_PONTOS_NO_GRAFICO; i++){
 
 		x1 = x0 + dt;
-		y1 = InterpolationMethod(xMtx,yMtx,n,x1);
+		y1 = InterpolationLagrange(xMtx,yMtx,n,x1);
 
 		glBegin(GL_LINES);
 			glVertex2f(x0,y0);
@@ -68,7 +123,32 @@ void DrawInterpolation(void){
 	}
 
 	glLineWidth(1.0f);
+}
+void DrawInterpolationSpline(void){
+	float dt = ( xMtx[n-1] - xMtx[0] )/1000;
+	float x0,y0,x1,y1;
 
+	x0 = xMtx[0];
+	y0 = yMtx[0];
+
+	glColor3f(0.0f, 0.0f, 1.0f); // Azul
+	glLineWidth(2.0f);
+
+	for(int i=0; i<N_PONTOS_NO_GRAFICO; i++){
+
+		x1 = x0 + dt;
+		y1 = InterpolationSpline(xMtx,yMtx,n,x1);
+
+		glBegin(GL_LINES);
+			glVertex2f(x0,y0);
+			glVertex2f(x1,y1);
+		glEnd();
+
+		x0 = x1;
+		y0 = y1;
+	}
+
+	glLineWidth(1.0f);
 }
 //===================================================================//
 int GetNumberOfPoints(void){
@@ -176,7 +256,6 @@ void myMouseFunc(int button, int state, int x, int y){
 	yMtx = GetYMatrix();
 
 	n = GetNumberOfPoints();
-
 }
 //======================================================================//
 void myMotionFunc(int x, int y){
@@ -185,7 +264,6 @@ void myMotionFunc(int x, int y){
 
 	UpdateXMatrix(xMtx);
 	UpdateYMatrix(yMtx);
-
 }
 
 //======================================================================//
@@ -198,7 +276,6 @@ void myKeyboardFunc(unsigned char key, int x, int y){
 		  take_points = 0;
 		  glutPostRedisplay ();
 	}
-
 }
 //======================================================================//
 // myinit is used to set coordinate systems.
@@ -252,8 +329,6 @@ void MyRightMenu (int id) {
 		break;
 
 	}
-
-
 }
 
 //======================================================================//
@@ -268,14 +343,22 @@ void myDisplayFunc(){
 	Picker.DrawPolygonal();
 
 	if(draw_yes){
-
-		DrawInterpolation();
-
+		switch(seletor){
+			case 1:
+				DrawInterpolationLagrange();
+				break;
+			case 2:
+				DrawInterpolationSpline();
+				break;
+			default:
+				DrawInterpolationLagrange();
+				DrawInterpolationSpline();
+				break;
+		}
 	}
 
 	glFlush();
 	glutSwapBuffers();
-
 }
 //======================================================================//
 // The main program creates a window, associates
@@ -283,10 +366,21 @@ void myDisplayFunc(){
 // then starts glut's event processing loop
 
 int main (int argc, char ** argv){
+	cout << "Problema 1: Interpolação utilizando a Forma de Lagrange" << endl;
+	cout << "Problema 2: Interpolação utilizando Spline Cúbica Natural" << endl;
+	cout << "Extra (3): Interpolação utilizando Forma de Lagrange e Spline Cúbica Natural ao mesmo tempo" << endl;
+	do {
+		cout << "Digite o número do problema que deseja resolver: " ;
+		cin >> seletor;
+	} while (seletor > 3 || seletor < 1);
+
+	cout << "A Forma de Lagrange tem linha de cor vermelha." << endl;
+	cout << "A Spline Cúbica Natural tem linha de cor azul." << endl;
+
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(400, 400);
+	glutInitWindowSize(640, 480);
 	glutCreateWindow ("Calculo Numerico (c) Edson L. Araujo");
 
 	glutCreateMenu (MyRightMenu);
