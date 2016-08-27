@@ -85,9 +85,17 @@ float InterpolationLinearSystem(float *x,float *y, int N, float t){
 
 float InterpolationLagrange(float *x,float *y, int N, float t)
 {	cout<<"Aqui -1";
-	if(N != nAnteriorL)
+	if(N==1 || N != nAnteriorL)
 	{	cout<<"Aqui 0";
-		Matriz a(N,x,y);
+		Matriz a(N,2);
+		for(int c=0;c<n;c++)
+		{
+			a.setElementos(c,0,x[0]);
+			a.setElementos(c,1,y[0]);
+		}
+		//a.imprimirMatriz();
+		//getchar();
+
 		cout<<"Aqui 1";
 		delete lagrange;
 		cout<<"Aqui 2";
@@ -96,6 +104,7 @@ float InterpolationLagrange(float *x,float *y, int N, float t)
 	}
 	cout<<"Aqui 4";
 	return lagrange->interpolar(t);
+
 
 }
 float InterpolationSpline(float *x,float *y, int N, float t){
@@ -388,6 +397,7 @@ void myDisplayFunc(){
 	if(draw_yes){
 		switch(seletor){
 			case 1:
+				cout<<"AQUI?";
 				DrawInterpolationLagrange();
 				break;
 			case 2:
