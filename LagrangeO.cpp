@@ -55,8 +55,9 @@ double LagrangeO::interpolar(const double &x){
 	double resultado = 0;
 	double Li = 0;
 	for (int c = 0; c < getTamanho(); c++){
-		Li = (pi(x)/((x-getX(c))*D(c)));
-		resultado += (getY(c)*Li);
+		Li = (1/((x-getX(c))*D(c)));
+		resultado += (getY(c)/Li);
 	}
+	resultado *= pi(x);
 	return resultado;
 }

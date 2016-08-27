@@ -22,7 +22,6 @@ class LagrangeO{
 		void setTamanho(int novoTamanho);
 
 		double interpolar(const double &x);
-
 };
 
 

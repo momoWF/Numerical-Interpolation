@@ -1,39 +1,47 @@
 #include "Lagrange.hpp"
 
-Lagrange::Lagrange(Matriz *x)
-{
-	if(x->getLinhas()>0 && x->getColunas() ==2)
-	{
+Lagrange::Lagrange(Matriz *x){
+	if(x->getLinhas()>0 && x->getColunas() ==2){
 		diferencas = new Matriz(x->getLinhas(),x->getLinhas());
 
-		for(int l=0;l<diferencas->getLinhas();l++)
-			for(int c=0;c<diferencas->getColunas();c++)
-			{
-				if(l-c)//aka as l!=c
+		for(int l=0;l<diferencas->getLinhas();l++){
+			for(int c=0;c<diferencas->getColunas();c++){
+				if(l != c)
 					diferencas->setElementos(l,c,x->getElementos(l,0)-x->getElementos(c,0));
 				else
 					diferencas->setElementos(l,c,x->getElementos(c,0));
-
-				diferencas->setB(c,x->getElementos(c,1));
 			}
-
+			diferencas->setB(l,x->getElementos(l,1));
+		}
 	}
 }
-Lagrange::~Lagrange()
-{
+Lagrange::Lagrange(float *x, float *y, int n){
+	diferencas = new Matriz(n,n);
+	for(int l=0;l<diferencas->getLinhas();l++){
+		for(int c=0;c<diferencas->getColunas();c++){
+			if(l != c)
+				diferencas->setElementos(l,c,x[l]-x[c]);
+			else
+				diferencas->setElementos(l,c,x[c]);
+		}
+		diferencas->setB(l,y[l]);
+	}
+}
+
+Lagrange::~Lagrange(){
 	delete diferencas;
 }
-double Lagrange::pi(const double &x)
-{
+
+double Lagrange::pi(const double &x){
 	double pi=1;
 
-	for(int c=0,pi=1 ;c<diferencas->getLinhas(); c++)
+	for (int c=0; c < diferencas->getLinhas() ; c++)
 		pi*=(x-diferencas->getElementos(c,c));
 
 	return pi;
 }
-double Lagrange::D(const int &i,const double &x)
-{
+
+double Lagrange::D(const int &i,const double &x){
 	double D=(x-diferencas->getElementos(i,i));
 
 	for(int c=0;c<diferencas->getColunas(); c++)
@@ -42,21 +50,17 @@ double Lagrange::D(const int &i,const double &x)
 
 	return D;
 }
-double Lagrange::S(const double &x)
-{
-	int S=0;
 
-	for(int c=0;c<diferencas->getLinhas();c++)
-	{
+double Lagrange::S(const double &x){
+	double S=0;
+
+	for(int c=0; c <diferencas->getLinhas() ;c++){
 		S+=(diferencas->getB(c)/D(c,x));
 	}
 
 	return S;
 }
-double Lagrange::interpolar(const double &x)
-{
+
+double Lagrange::interpolar(const double &x){
 	return pi(x)*S(x);
 }
-
-
-

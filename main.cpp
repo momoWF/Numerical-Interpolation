@@ -87,23 +87,13 @@ float InterpolationLagrange(float *x,float *y, int N, float t)
 {
 	if(N==1 || N != nAnteriorL)
 	{
-		Matriz a(N,2);
-		for(int c=0;c<n;c++)
-		{
-			a.setElementos(c,0,x[c]);
-			a.setElementos(c,1,y[c]);
-		}
-		//a.imprimirMatriz();
-		//getchar();
-
-		nAnteriorL = N;
 		delete lagrange;
-		lagrange = new Lagrange(&a);
-
-		lagrange->diferencas->imprimirMatriz();
+		lagrange = new Lagrange(x,y,N);
+		nAnteriorL = N;
 	}
 	return lagrange->interpolar((double) t);
 }
+
 float InterpolationSpline(float *x,float *y, int N, float t){
 	double resultado;
 	if (N == 1 || N != nAnteriorS){
