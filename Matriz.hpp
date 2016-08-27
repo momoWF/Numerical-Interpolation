@@ -24,6 +24,7 @@ class Matriz{
 	public:
 		double *b;
 		Matriz(int l, int c);
+		Matriz(int n,float*x,float*y);
 		~Matriz();
 		void setB(int,double);
 		double getB(int);

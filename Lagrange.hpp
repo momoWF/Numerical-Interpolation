@@ -2,25 +2,19 @@
 #define LAGRANGE_HPP_
 #include <cmath>
 #include <iostream>
+#include "Matriz.hpp"
 
 using namespace std;
 
 class Lagrange{
 	private:
-		double *vetorX;
-		double *vetorY;
-		int tamanho;
+		Matriz *diferencas;
 	public:
-		Lagrange(int novoTamanho = 0, double *novoVetorX = NULL, double *novoVetorY = NULL);
+		Lagrange(Matriz *x);
+		~Lagrange();
 		double pi(const double &x);
-		double D(const double &i);
-		void setVetorX(double *novoVetorX);
-		void setVetorY(double *novoVetorY);
-		double getX(const int &i);
-		double getY(const int &i);
-		int getTamanho();
-		void setTamanho(int novoTamanho);
-
+		double D(const int &i,const double &x);
+		double S(const double &x);
 		double interpolar(const double &x);
 
 };

@@ -87,6 +87,16 @@ Matriz::Matriz(int l, int c)
 		}
 	}
 }
+Matriz::Matriz(int n,float*x,float*y):Matriz(2,2)
+{
+	for(int c=0;c<n;c++)
+	{
+		setElementos(c,0,x[0]);
+		setElementos(c,1,y[0]);
+	}
+	setLinhas(n);
+	setColunas(n);
+}
 Matriz::~Matriz()
 {	int k;
 

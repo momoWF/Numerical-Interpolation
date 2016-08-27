@@ -83,19 +83,20 @@ float InterpolationLinearSystem(float *x,float *y, int N, float t){
 	return polinomio->getValor(t);
 }
 
-float InterpolationLagrange(float *x,float *y, int N, float t){
-	if (N == 1 || N != nAnteriorL){
-		double *vetorX = new double[N];
-		double *vetorY = new double[N];
-		for (int c = 0 ; c < N ; c++){
-			vetorX[c] = x[c];
-			vetorY[c] = y[c];
-		}
-		nAnteriorL = N;
+float InterpolationLagrange(float *x,float *y, int N, float t)
+{	cout<<"Aqui -1";
+	if(N != nAnteriorL)
+	{	cout<<"Aqui 0";
+		Matriz a(N,x,y);
+		cout<<"Aqui 1";
 		delete lagrange;
-		lagrange = new Lagrange(N, vetorX, vetorY);
+		cout<<"Aqui 2";
+		lagrange = new Lagrange(&a);
+		cout<<"Aqui 3";
 	}
+	cout<<"Aqui 4";
 	return lagrange->interpolar(t);
+
 }
 float InterpolationSpline(float *x,float *y, int N, float t){
 	double resultado;

@@ -1,64 +1,61 @@
 #include "Lagrange.hpp"
 
-Lagrange::Lagrange(int novoTamanho, double *novoVetorX, double *novoVetorY){
-	setTamanho(novoTamanho);
-	setVetorX(novoVetorX);
-	setVetorY(novoVetorY);
-}
+Lagrange::Lagrange(Matriz *x)
+{
+	if(x->getLinhas()>0 && x->getColunas() ==2)
+	{
+		diferencas = new Matriz(x->getLinhas(),x->getLinhas());
 
-void Lagrange::setVetorX(double *novoVetorX){
-	vetorX = novoVetorX;
-}
+		for(int l=0;l<diferencas->getLinhas();l++)
+			for(int c=0;c<diferencas->getColunas();c++)
+			{
+				if(l-c)//aka as l!=c
+					diferencas->setElementos(l,c,x->getElementos(l,0)-x->getElementos(c,0));
+				else
+					diferencas->setElementos(l,c,x->getElementos(c,0));
 
-void Lagrange::setVetorY(double *novoVetorY){
-	vetorY = novoVetorY;
-}
+				diferencas->setB(c,x->getElementos(c,1));
+			}
 
-double Lagrange::getX(const int &i){
-	if (i >=0 && i < getTamanho())
-		return vetorX[i];
-	else
-		return 0.0;
-}
-
-double Lagrange::getY(const int &i){
-	if (i >=0 && i < getTamanho())
-		return vetorY[i];
-	else
-		return 0.0;
-}
-
-int Lagrange::getTamanho(){
-	return tamanho;
-}
-void Lagrange::setTamanho(int novoTamanho){
-	tamanho = novoTamanho;
-}
-
-double Lagrange::pi(const double &x){
-	double resultado = 1;
-	for (int c = 0; c < getTamanho(); c++)
-		resultado *= (x - getX(c));
-	return resultado;
-}
-
-double Lagrange::D(const double &i){
-	double resultado = 1;
-	for (int c = 0; c < getTamanho(); c++)
-		if (c != i)
-			resultado *= (getX(i) - getX(c));
-	return resultado;
-}
-
-double Lagrange::interpolar(const double &x){
-	//Polinomio *polinomio = new Polinomio(getTamanho());
-	double resultado = 0;
-	double Li = 0;
-	for (int c = 0; c < getTamanho(); c++){
-		Li = (pi(x)/((x-getX(c))*D(c)));
-		resultado += (getY(c)*Li);
 	}
-	return resultado;
+}
+Lagrange::~Lagrange()
+{
+	delete diferencas;
+}
+double Lagrange::pi(const double &x)
+{
+	double pi;
+
+	for(int c=0,pi=1 ;c<diferencas->getLinhas(); c++)
+		pi*=(x-diferencas->getElementos(c,c));
+
+	return pi;
+}
+double Lagrange::D(const int &i,const double &x)
+{
+	double D=(x-diferencas->getElementos(i,i));
+
+	for(int c=0;c<diferencas->getColunas(); c++)
+		if(i!=c)
+			D*=diferencas->getElementos(i,c);
+
+	return D;
+}
+double Lagrange::S(const double &x)
+{
+	int S=0;
+
+	for(int c=0;c<diferencas->getLinhas();c++)
+	{
+		S+=(diferencas->getB(c)/D(c,x));
+	}
+
+	return S;
+}
+double Lagrange::interpolar(const double &x)
+{
+	return pi(x)*S(x);
 }
 
 
