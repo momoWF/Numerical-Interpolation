@@ -7,9 +7,8 @@
 using namespace std;
 
 class Lagrange{
-	private:
-		Matriz *diferencas;
 	public:
+	Matriz *diferencas;
 		Lagrange(Matriz *x);
 		~Lagrange();
 		double pi(const double &x);

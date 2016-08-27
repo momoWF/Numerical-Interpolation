@@ -25,7 +25,7 @@ Lagrange::~Lagrange()
 }
 double Lagrange::pi(const double &x)
 {
-	double pi;
+	double pi=1;
 
 	for(int c=0,pi=1 ;c<diferencas->getLinhas(); c++)
 		pi*=(x-diferencas->getElementos(c,c));
