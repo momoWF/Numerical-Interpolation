@@ -18,23 +18,23 @@ void Matriz::setColunas(int c){
 	colunas=c;
 }
 
-int Matriz::getLinhas(void){
+int Matriz::getLinhas(void) const{
 	return linhas;
 }
 
-int Matriz::getColunas(void){
+int Matriz::getColunas(void) const{
 	return colunas;
 }
 
-void Matriz::setElementos(int l,int c,double el){
-	if(l>=0 && l<getLinhas() && c>=0 && c<getColunas())
-		elementos[l][c] = el;
+void Matriz::setElemento(const int linha,const int coluna,const double elemento){
+	if(linha>=0 && linha<getLinhas() && coluna>=0 && coluna<getColunas())
+		elementos[linha][coluna] = elemento;
 	/*else
 		cout<<"["<<l<<","<<c<<"]"<<"Posicao Invalida"<<endl;*/
 }
-double Matriz::getElementos(int l,int c){
-	if(l>=0 && l<getLinhas() && c>=0 && c<getColunas())
-		return elementos[l][c];
+double Matriz::getElemento(const int linha,const int coluna) const{
+	if(linha>=0 && linha < getLinhas() && coluna>=0 && coluna < getColunas())
+		return elementos[linha][coluna];
 	/*else
 	{
 		cout<<"["<<l<<","<<c<<"]"<<"Posicao Invalida"<<endl;
@@ -56,33 +56,27 @@ double Matriz::getB(int n){
 	cout<<"["<<n<<"]"<<"Possicao!! Invalida"<<endl;*/
 }
 
-Matriz::Matriz(int l, int c)
-{
+Matriz::Matriz(const int nLinhas, const int nColunas){
 	int k;
-	elementos = (double**)malloc(sizeof(double*)*l);
+	elementos = new double*[nLinhas];
 	if(!elementos)
 	{
 		printf("Error pointer for pointer dinamic alocation");
 		exit(0);
 	}
-	else
-	{
-
-		for(k=0;k<l;k++)
-		{
-			elementos[k] = (double *)malloc(sizeof(double)*c);
-				if(!(elementos[k]))
-				{
-					printf("Error pointer float alocation n(%d)",k+1);
+	else{
+		for(k=0; k < nLinhas;k++){
+			elementos[k] = (double *)malloc(sizeof(double)*nColunas);
+				if(!(elementos[k])){
+					printf("ERRO! Não foi possível alocar o vetor de elementos. (%d)",k+1);
 					exit(1);
 				}
 		}
-		setLinhas(l);
-		setColunas(c);
-		b=(double*)malloc(sizeof(double)*l);
-		if(!b)
-		{
-			cout<<"Erro Alocando vetor B"<<endl;
+		setLinhas(nLinhas);
+		setColunas(nColunas);
+		b = new double[nLinhas];
+		if (!b){
+			cout<<"ERRO! Não foi possível alocar o vetor B."<<endl;
 			exit(2);
 		}
 	}
@@ -92,12 +86,12 @@ Matriz::Matriz(int n,float*x,float*y):Matriz(n,2)
 {
 	for(int c=0;c<n;c++)
 	{
-		setElementos(c,0,x[0]);
-		setElementos(c,1,y[0]);
+		setElemento(c,0,x[0]);
+		setElemento(c,1,y[0]);
 	}
 }*/
-Matriz::~Matriz()
-{	int k;
+Matriz::~Matriz(){
+	int k;
 
 	for(k=0;k<getLinhas();k++)
 			delete [](elementos[k]); 
@@ -114,7 +108,7 @@ void Matriz::imprimirMatriz()
 		{
 			for(w=0;w<getColunas();w++)
 			{
-				printf(" %16.8lf",getElementos(k,w));
+				printf(" %16.8lf",getElemento(k,w));
 			}
 			printf("  %16.8lf",getB(k));
 		    printf("\n");
@@ -130,7 +124,7 @@ void Matriz::setMatriz(){
 		{
 			printf("\nDigite o elemento [%d][%d]: ",k+1,w+1);
 			scanf("%lf",&aux);
-			setElementos(k,w,aux);
+			setElemento(k,w,aux);
 		}
 }
 
@@ -157,8 +151,7 @@ void Matriz::trocaLinhas(int l1,int l2)
 		setB(l2,aux1);
 		
 	}
-	else
-	{
+	else{
 		//cout << "Operacao Invalida (AQUI MEMO)"<<endl;
 	}
 }
@@ -182,8 +175,8 @@ int * Matriz::fatoracaoLU(char modo,int *p)
 			{	
 				for(l=c+1;l<getLinhas();l++)
 				{
-					m=(getElementos(l,c)/getElementos(c,c));
-					setElementos(l,c,m);
+					m=(getElemento(l,c)/getElemento(c,c));
+					setElemento(l,c,m);
 					LmLY(l,c,m,'L');
 				}
 			}
@@ -199,7 +192,7 @@ int * Matriz::fatoracaoLU(char modo,int *p)
 }
 void Matriz::eliminacaoDeGauss(void)
 {
-	int l,c,*p=(int*)malloc(sizeof(int)*getLinhas());
+	int l,c,*p= new int[getLinhas()];
 	double m;
 	cout<<endl<<"\tELIMINACAO GAUSSIANA\t"<<endl;
 	pivoteamento(&p,'E');
@@ -207,8 +200,8 @@ void Matriz::eliminacaoDeGauss(void)
 	{	
 		for(l=c+1;l<getLinhas();l++)
 		{
-			m=(getElementos(l,c)/getElementos(c,c));
-			setElementos(l,c,0);
+			m=(getElemento(l,c)/getElemento(c,c));
+			setElemento(l,c,0);
 			LmLY(l,c,m,'E');
 		}
 	}
@@ -238,7 +231,7 @@ void Matriz::gaussJacobi(void)
 	{	
 		for(l2=l1+1;l2<getLinhas() && alfa()>=1;l2++)
 		{	
-			if(getElementos(l2,l1)!=0)
+			if(getElemento(l2,l1)!=0)
 			{
 				trocaLinhas(l1,l2);
 				if(alfa()>=1)//Nao funcionou a troca, volta
@@ -255,14 +248,14 @@ void Matriz::gaussJacobi(void)
 		for(i=0;i<getLinhas();i++)
 			for(j=0;j<getLinhas();j++)
 				if(i!=j)	
-					x[i]-=getElementos(i,j)*x[j];
+					x[i]-=getElemento(i,j)*x[j];
 				
 			
 		
 
 		for(i=0;i<getLinhas();i++)
 		{
-			x[i]/=getElementos(i,i);
+			x[i]/=getElemento(i,i);
 			cout<<"X["<<i<<"]"<<" = "<<x[i]<<endl;
 		}
 		
@@ -288,9 +281,9 @@ double Matriz::alfa(void){
  	int l,c;
 	for(l=0;l<getLinhas();l++)
 	{
-		for(c=0,soma=-fabs(getElementos(l,l));c<getLinhas();c++)
-			soma+=fabs(getElementos(l,c));
-		soma/=fabs(getElementos(l,l));
+		for(c=0,soma=-fabs(getElemento(l,l));c<getLinhas();c++)
+			soma+=fabs(getElemento(l,c));
+		soma/=fabs(getElemento(l,l));
 		
 			if(l==0 || soma> maior)
 				maior=soma;
@@ -304,7 +297,7 @@ void Matriz::LmLY(int l1,int l2,double m,char modo)//linha1 = linha1 - linha2 * 
 	int c;
 	
 	for(c=l2+1;c<getColunas();c++)
-		setElementos(l1,c,(getElementos(l1,c)-m*getElementos(l2,c)));
+		setElemento(l1,c,(getElemento(l1,c)-m*getElemento(l2,c)));
 	
 	if(modo=='E')
 		setB(l1,getB(l1)-m*getB(l2));//Isso não é necessário na LU!!!
@@ -344,7 +337,7 @@ void Matriz::resolveSistemaTriangular(char modo)
 	
 	
 	for(;controle(c,L,modo);c+=a)
-	{	double divisor = modo=='L'?1:getElementos(c,c);
+	{	double divisor = modo=='L'?1:getElemento(c,c);
 		y[c]=(decressimoDoJaCalculado(c,y,modo))/divisor;/// X[c] = ( B[c] -(X[0]*A[c][0]+X[1]*A[c][1]+.....+X[c-1]*A[c][c-1]+X[c+1]*A[c][c+1]+......+X[n]*A[c][n]))/A[c][c]
 		//cout<<"/"<<divisor;
 		//cout<<endl;
@@ -380,8 +373,8 @@ double Matriz::decressimoDoJaCalculado(int l,double *x,char modo)
 	//cout <<x[l];
 	for( ;controle(c,L,modo) && controle(c,l,modo);c+=a)
 	{	
-			soma+=x[c]*getElementos(l,c);
-			//printf(" -%lf*%lf",x[c],getElementos(l,c));
+			soma+=x[c]*getElemento(l,c);
+			//printf(" -%lf*%lf",x[c],getElemento(l,c));
 	}
 		
 	
@@ -399,10 +392,10 @@ void Matriz::pivoteamento(int **x,char modo){
 	 	double maior;
 		
 		for(c=0,(*x)[getLinhas()-1]=1 ;c<getLinhas()-1; c++){
-			maior = fabs(getElementos(c,c));
+			maior = fabs(getElemento(c,c));
 		 	imaior =c;
 			for(l=c+1;l<getLinhas();l++)
-			{	double atual=fabs(getElementos(l,c));
+			{	double atual=fabs(getElemento(l,c));
 				//cout<<"Atual: "<<atual<<endl;
 			 	if(maior < atual )
 				{
@@ -488,7 +481,7 @@ void Matriz::copiaMatriz(Matriz *a)
 	{
 		for(int c=0;c<a->getColunas();c++)
 			for(int l=0;l<a->getLinhas();l++)
-					setElementos(l,c,a->getElementos(l,c));
+					setElemento(l,c,a->getElemento(l,c));
 			for(int l=0;l<a->getLinhas();l++)
 				setB(l,a->getB(l));
 
@@ -519,12 +512,12 @@ void Matriz::interpolar(Polinomio **px){
 		
 		for(c=0;c<getLinhas();c++)
 		{	
-			aux.setElementos(c,0,1);
+			aux.setElemento(c,0,1);
 		
 			for(c1=1;c1<getLinhas();c1++)
-				aux.setElementos(c,c1,pow(getElementos(c,0),c1));
+				aux.setElemento(c,c1,pow(getElemento(c,0),c1));
 
-			aux.b[c]=getElementos(c,1);
+			aux.b[c]=getElemento(c,1);
 		}
 	 
 	 	p=aux.fatoracaoLU('N',p);

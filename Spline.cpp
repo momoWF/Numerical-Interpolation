@@ -1,86 +1,124 @@
 #include "Spline.hpp"
 
-using namespace std;
+Spline::Spline(const int &n,const float *x,const float *y){
+	this->x = vector<double>(n);
+	a = vector<double>(n);
+	b = vector<double>(n-1);
+	c = vector<double>(n);
+	d = vector<double>(n-1);
 
-double maior(double A, double B){
-	if (A > B)
-		return A;
-	else
-		return B;
-}
-
-double menor(double A, double B){
-	if (A < B)
-		return A;
-	else
-		return B;
-}
-
-Spline::Spline(vector<double> &novoVetorX, vector<double> &novoVetorY, const int &novoTamanho){
-	setTamanho(novoTamanho);
-	vetorX = &novoVetorX[0];
-	vetorY = &novoVetorY[0];
-	g  = vector<double>(novoTamanho);
-	calcularG();
-}
-
-void Spline::setTamanho(double novoTamanho){
-	tamanho = novoTamanho;
-}
-
-int Spline::getTamanho(){
-	return tamanho;
-}
-
-void Spline::calcularG(){
-	int i,c,n=g.size();
-	double p,un,qn,sig;
-	vector<double> aux(n-1);
-	g[0]=aux[0]=0.0;			//	Parâmetro do Spline Cúbico Natural
-	for (i=1;i<n-1;i++) { 	//	Decomposição da matriz tridiagonal
-		sig=(vetorX[i]-vetorX[i-1])/(vetorX[i+1]-vetorX[i-1]);
-		p=sig*g[i-1]+2.0;
-		g[i]=(sig-1.0)/p;
-		aux[i]=(vetorY[i+1]-vetorY[i])/(vetorX[i+1]-vetorX[i]) - (vetorY[i]-vetorY[i-1])/(vetorX[i]-vetorX[i-1]);
-		aux[i]=(6.0*aux[i]/(vetorX[i+1]-vetorX[i-1])-sig*aux[i-1])/p;
+	for (int c = 0; c < n; c++){		//	Definindo os coeficientes a[i]
+		a[c] = y[c];
+		this->x[c] = x[c];
 	}
-	un = qn = 0; 			//	Parâmetro do Spline Cúbico Natural
-	g[n-1]=(un-qn*aux[n-2])/(qn*g[n-2]+1.0);
-	for (c=n-2;c>=0;c--) 	// Resolvendo a matriz tridiagonal
-		g[c]=g[c]*g[c+1]+aux[c];
+
+	A = new Matriz(n,n);
+
+	A->setElemento(0,0,1.0);
+	A->setElemento(A->getLinhas()-1,A->getColunas()-1,1.0);
+	A->setB(0, 0.0);
+
+	h = vector<double>(n-1);
+	for (int c = 0; c < (n-1); c++){
+		h[c] = x[c+1] - x[c];
+	}
+
+	A->setElemento(1,0,h[0]);
+	int c = 1;
+	for (; c < (n-1); c++) {
+		A->setElemento(c+1,c,h[c]);
+		A->setElemento(c,c+1,h[c]);
+
+		A->setElemento(c,c,2*(h[c] + h[c-1]));
+
+		A->setB(c, (3/h[c])*(a[c+1] - a[c]) - (3/h[c-1])*(a[c] - a[c-1]));
+	}
+
+	A->setElemento(0,1,0.0);
+	A->setElemento(A->getLinhas()-1,A->getColunas()-2,0.0);
+	A->setB(A->getLinhas()-1, 0.0);
+
+	calcularCoeficientesC();
+	calcularCoeficientesD();
+	calcularCoeficientesB();
 }
 
-double Spline::interpolar(double x) {
-	int loc = localizar(x);
-	int kMenor=loc,kMaior=loc+1;
-	double y,h,b,a;
-	h=vetorX[kMaior]-vetorX[kMenor];
-	if (h == 0.0){
-		cout << "ERRO! Valores em x muito próximos.";
+Spline::~Spline(){
+	if (A)
+		delete A;
+}
+double Spline::S(const int &j, const double &x){
+	if ((j >= 0) && (j < a.size())) {
+		return (a[j] + (x-this->x[j])*(b[j] + (x-this->x[j])*(c[j] + (d[j]*(x-this->x[j])) )));
 	}
-	a=(vetorX[kMaior]-x)/h;
-	b=(x-vetorX[kMenor])/h; // Calculando o Spline
-	y=a*vetorY[kMenor]+b*vetorY[kMaior]+((a*a*a-a)*g[kMenor]+(b*b*b-b)*g[kMaior])*(h*h)/6.0;
-	return y;
+	else
+		return 0.0;
+}
+
+double Spline::interpolar(const double &x){
+	return (S(localizar(x),x));
 }
 
 int Spline::localizar(const double x){
 	int jSuperior;
 	int jInferior;
 	int jm;
-	if (getTamanho() < 2){
+	if (a.size() < 2){
 		cout << "ERRO! Não é possível localizar com somente um ponto." << endl;
 		return 0;
 	}
-	bool ver=(vetorX[getTamanho()-1] >= vetorX[0]);
+	bool ver=(this->x[this->x.size()-1] >= this->x[0]);
 	jInferior=0;
-	jSuperior=getTamanho()-1;
+	jSuperior=this->x.size()-1;
 	while (jSuperior-jInferior > 1) {
 		jm = (jSuperior+jInferior)/2;
-		if ((x >= vetorX[jm]) == ver)
+		if ((x >= this->x[jm]) == ver)
 			jInferior=jm;
 		else
 			jSuperior=jm;
 	}
-	return maior(0,menor(getTamanho()-2,jInferior));
+	return maior(0,menor(this->x.size()-2,jInferior));
+}
+
+void Spline::triangularTridiagonal(){
+	double m;
+	for(int j = 0; j !=  (A->getColunas() - 1); j++){
+		if (A->getElemento(j,j) == 0){
+			cout << "ERROR!" <<
+					"Sistema impossível de ser resolvido pelo modo tridiagonal." << endl;
+			exit(1);
+		}
+
+		m = ((A->getElemento(j+1,j)) / ((A->getElemento(j,j))));
+		A->setElemento(j+1,j,0);
+
+		A->setElemento(j+1,j+1, A->getElemento(j+1,j+1) - (m * A->getElemento(j,j+1)));
+		A->setB(j+1, A->getB(j+1) - (m * A->getB(j)));
+	}
+	A->imprimirMatriz();
+}
+
+void Spline::substituirTridiagonal(){
+	int c = this->c.size();
+	this->c[c] = A->getB(A->getLinhas()-1)/A->getElemento(A->getLinhas()-1,A->getColunas()-1);
+
+	for (c--; c >= 0; c--)
+		this->c[c] = (A->getB(c) - A->getElemento(c,c+1)*this->c[c+1])/A->getElemento(c,c);
+}
+
+
+void Spline::calcularCoeficientesA(){
+
+}
+void Spline::calcularCoeficientesB(){
+	for (int j = 0; j < this->b.size(); j++)
+		b[j] = ( (a[j+1] - a[j]) /h[j] ) - ( h[j]*(c[j+1] + 2*c[j])/ 3);
+}
+void Spline::calcularCoeficientesC(){
+	triangularTridiagonal();
+	substituirTridiagonal();
+}
+void Spline::calcularCoeficientesD(){
+	for (int j = 0; j < this->d.size(); j++)
+		d[j] = (this->c[j+1] - this->c[j])/ (3*h[j]) ;
 }

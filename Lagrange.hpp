@@ -17,7 +17,6 @@ class Lagrange{
 		double D(const int &i,const double &x);
 		double S(const double &x);
 		double interpolar(const double &x);
-
 };
 
 #endif /* LAGRANGE_HPP_ */

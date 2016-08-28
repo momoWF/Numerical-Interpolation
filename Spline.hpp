@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <vector>
 #include <math.h>
+#include "Matriz.hpp"
 
 using namespace std;
 
@@ -12,19 +13,29 @@ double menor(double A, double B);
 
 class Spline{
 	private:
-		int tamanho;
-		const double *vetorX, *vetorY;
-		vector<double> g;
+		vector<double> a;	//	Coeficientes de grau 0 -	y ou f(x)
+		vector<double> b;	//	Coeficientes de grau 1
+		vector<double> c;	//	Coeficientes de grau 2
+		vector<double> d;	//	Coeficientes de grau 3
+		vector<double> x;	//	x
+		vector<double> h;	//	Vetor de Diferenças
+		Matriz *A;
 	public:
-		Spline(vector<double> &novoVetorX, vector<double> &novoVetorY, const int &novoTamanho);
-
-		void setTamanho(double novoTamanho);
-		int getTamanho();
-
-		void calcularG();
-		double interpolar(double xv);
-
+		Spline(const int &n,const float *x,const float *y);
+		~Spline();
+		double S(const int &i, const double &x);
 		int localizar(const double x);
+		double interpolar(const double &x);
+
+		void calcularCoeficientesA();
+		void calcularCoeficientesB();
+		void calcularCoeficientesC();
+		void calcularCoeficientesD();
+
+		void triangularTridiagonal();
+		void substituirTridiagonal();
 };
+
+
 
 #endif /* SPLINE_HPP_ */

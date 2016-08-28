@@ -7,11 +7,11 @@ Lagrange::Lagrange(Matriz *x){
 		for(int l=0;l<diferencas->getLinhas();l++){
 			for(int c=0;c<diferencas->getColunas();c++){
 				if(l != c)
-					diferencas->setElementos(l,c,x->getElementos(l,0)-x->getElementos(c,0));
+					diferencas->setElemento(l,c,x->getElemento(l,0)-x->getElemento(c,0));
 				else
-					diferencas->setElementos(l,c,x->getElementos(c,0));
+					diferencas->setElemento(l,c,x->getElemento(c,0));
 			}
-			diferencas->setB(l,x->getElementos(l,1));
+			diferencas->setB(l,x->getElemento(l,1));
 		}
 	}
 }
@@ -20,9 +20,9 @@ Lagrange::Lagrange(float *x, float *y, int n){
 	for(int l=0;l<diferencas->getLinhas();l++){
 		for(int c=0;c<diferencas->getColunas();c++){
 			if(l != c)
-				diferencas->setElementos(l,c,x[l]-x[c]);
+				diferencas->setElemento(l,c,x[l]-x[c]);
 			else
-				diferencas->setElementos(l,c,x[c]);
+				diferencas->setElemento(l,c,x[c]);
 		}
 		diferencas->setB(l,y[l]);
 	}
@@ -36,17 +36,17 @@ double Lagrange::pi(const double &x){
 	double pi=1;
 
 	for (int c=0; c < diferencas->getLinhas() ; c++)
-		pi*=(x-diferencas->getElementos(c,c));
+		pi*=(x-diferencas->getElemento(c,c));
 
 	return pi;
 }
 
 double Lagrange::D(const int &i,const double &x){
-	double D=(x-diferencas->getElementos(i,i));
+	double D=(x-diferencas->getElemento(i,i));
 
 	for(int c=0;c<diferencas->getColunas(); c++)
 		if(i!=c)
-			D*=diferencas->getElementos(i,c);
+			D*=diferencas->getElemento(i,c);
 
 	return D;
 }

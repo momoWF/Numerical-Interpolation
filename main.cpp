@@ -30,8 +30,8 @@
 #include "points.h"
 #include "picker.h"
 #include "Matriz.hpp"
-#include "Spline.hpp"
 #include "Lagrange.hpp"
+#include "Spline.hpp"
 
 GLint antialiasing		  = 1;
 
@@ -69,8 +69,8 @@ float InterpolationLinearSystem(float *x,float *y, int N, float t){
 	if (N == 1 || N != nAnteriorLin){
 		Matriz matriz(N,2);
 		for (int c = 0 ; c < N ; c++){
-			matriz.setElementos(c,0,x[c]);
-			matriz.setElementos(c,1,y[c]);
+			matriz.setElemento(c,0,x[c]);
+			matriz.setElemento(c,1,y[c]);
 		}
 		matriz.interpolar(&polinomio);
 		nAnteriorLin = N;
@@ -97,14 +97,9 @@ float InterpolationLagrange(float *x,float *y, int N, float t)
 float InterpolationSpline(float *x,float *y, int N, float t){
 	double resultado;
 	if (N == 1 || N != nAnteriorS){
-		vector<double> vetorX(N), vetorY(N);
-		for (int c = 0; c < N; c++){
-			vetorX[c] = x[c];
-			vetorY[c] = y[c];
-		}
 		nAnteriorS = N;
 		delete spline;
-		spline = new Spline(vetorX, vetorY, N);
+		spline = new Spline(N,x,y);
 	}
 	resultado = spline->interpolar(t);
 	return resultado;
@@ -418,15 +413,16 @@ int main (int argc, char ** argv){
 	cout << "Problema 1: Interpolação utilizando a Forma de Lagrange" << endl;
 	cout << "Problema 2: Interpolação utilizando Spline Cúbica Natural" << endl;
 	cout << "Extra (3): Interpolação utilizando Forma de Lagrange e Spline Cúbica Natural ao mesmo tempo" << endl;
-	cout << "Extra (4): Interpolação utilizando Sistema Linear - Força Bruta - Matriz" << endl;
+	cout << "Extra (4): Interpolação utilizando Sistema Linear - Força Bruta - Vandermonde Matrix" << endl;
 	cout << "Extra (5): Interpolação utilizando Todos acima" << endl;
 	do {
 		cout << "Digite o número do problema que deseja resolver: " ;
 		cin >> seletor;
 	} while (seletor > 5 || seletor < 1);
 
-	cout << "A Forma de Lagrange tem linha de cor vermelha." << endl;
+	cout << "O polinômio da Forma de Lagrange tem linha de cor vermelha." << endl;
 	cout << "A Spline Cúbica Natural tem linha de cor azul." << endl;
+	cout << "O polinômio da Matri\ de Vandermonde tem linha de cor verde." << endl;
 
 	glutInit(&argc, argv);
 
