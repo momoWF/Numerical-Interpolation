@@ -361,7 +361,18 @@ void MyRightMenu (int id) {
 		glutPostRedisplay();
 
 		break;
-
+	case 21:
+		seletor = 1;
+		glutPostRedisplay ();
+		break;
+	case 22:
+		seletor = 2;
+		glutPostRedisplay ();
+		break;
+	case 23:
+		seletor = 3;
+		glutPostRedisplay ();
+		break;
 	}
 }
 
@@ -436,6 +447,9 @@ int main (int argc, char ** argv){
 	glutAddMenuEntry ("Exit",   2);
 	glutAddMenuEntry ("Start",  3);
 	glutAddMenuEntry ("Antialiasing",9);
+	glutAddMenuEntry ("-Forma de Lagrange (vermelho)",21);
+	glutAddMenuEntry ("-Spline Cubica Natural (azul)",22);
+	glutAddMenuEntry ("-As duas ao mesmo tempo",23);
 
 	glutAttachMenu (GLUT_RIGHT_BUTTON);
 

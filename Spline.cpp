@@ -95,7 +95,6 @@ void Spline::triangularTridiagonal(){
 		A->setElemento(j+1,j+1, A->getElemento(j+1,j+1) - (m * A->getElemento(j,j+1)));
 		A->setB(j+1, A->getB(j+1) - (m * A->getB(j)));
 	}
-	A->imprimirMatriz();
 }
 
 void Spline::substituirTridiagonal(){
