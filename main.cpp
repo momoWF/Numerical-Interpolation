@@ -47,9 +47,6 @@ Spline *spline = NULL;
 double *xAnterior = NULL;
 double *yAnterior = NULL;
 
-int nAnteriorLin = 0;
-int nAnteriorL = 0;
-int nAnteriorS = 0;
 int seletor = 0;
 int N_PONTOS_NO_GRAFICO = 1000;
 
@@ -71,47 +68,39 @@ GLint		take_points = 1;
 
 //===================================================================//
 double InterpolationLinearSystem(double *x,double *y, int N, double t){
-	if (N == 1 || x != xAnterior || y != yAnterior){
+	//if (x != xAnterior || y != yAnterior){
 		Matriz matriz(N,2);
 		for (int c = 0 ; c < N ; c++){
 			matriz.setElemento(c,0,x[c]);
 			matriz.setElemento(c,1,y[c]);
 		}
 		matriz.interpolar(&polinomio);
-		xAnterior = x;
-		yAnterior = y;
 		cout << endl << "Polinômio pela Forma Linear: ";
 		polinomio->imprimir();
 		cout << endl;
-	}
+		//xAnterior = x ,yAnterior = y;
+	//}
 
 	return polinomio->getValor(t);
 }
 
 double InterpolationLagrange(double *x,double *y, int N, double t){
-	//if(N==1 || x != xAnterior || y != yAnterior){
-		//xAnterior = x;
-		//yAnterior = y;
-		delete lagrange;
-		lagrange = new Lagrange(x,y,N);
-		nAnteriorL = N;
+	//if (x != xAnterior || y != yAnterior){
+	delete lagrange;
+	lagrange = new Lagrange(x,y,N);
+	//xAnterior = x ,yAnterior = y;
 	//}
 	return lagrange->interpolar((double) t);
 }
 
 double InterpolationSpline(double *x,double *y, int N, double t){
+	//if (x != xAnterior || y != yAnterior){
 	double resultado;
-	//if (N == 1 || x != xAnterior || y != yAnterior){
-		//xAnterior = x;
-		//yAnterior = y;
-		//cout << "Entrou delete" << endl;
-		delete spline;
-	cout << "int 1" << endl;
-		spline = new Spline(N,x,y);
+	delete spline;
+	spline = new Spline(N,x,y);
+	//xAnterior = x ,yAnterior = y;
 	//}
-		cout << "int 2" << endl;
 	resultado = spline->interpolar(t);
-	cout << "int 3" << endl;
 	return resultado;
 }
 //===================================================================//

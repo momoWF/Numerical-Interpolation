@@ -7,9 +7,6 @@
 
 using namespace std;
 
-double maior(double A, double B);
-double menor(double A, double B);
-
 class SplineO{
 	private:
 		int tamanho;

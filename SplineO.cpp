@@ -2,20 +2,6 @@
 
 using namespace std;
 
-double maior(double A, double B){
-	if (A > B)
-		return A;
-	else
-		return B;
-}
-
-double menor(double A, double B){
-	if (A < B)
-		return A;
-	else
-		return B;
-}
-
 SplineO::SplineO(vector<double> &novoVetorX, vector<double> &novoVetorY, const int &novoTamanho){
 	setTamanho(novoTamanho);
 	vetorX = &novoVetorX[0];
@@ -82,5 +68,5 @@ int SplineO::localizar(const double x){
 		else
 			jSuperior=jm;
 	}
-	return maior(0,menor(getTamanho()-2,jInferior));
+	return fmax(0,fmin(getTamanho()-2,jInferior));
 }

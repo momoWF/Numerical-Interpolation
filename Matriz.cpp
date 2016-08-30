@@ -92,18 +92,13 @@ Matriz::Matriz(int n,float*x,float*y):Matriz(n,2)
 }*/
 Matriz::~Matriz(){
 	int k;
-	cout << "Matrized 2" << endl;
 	for(k=0;k<getLinhas();k++)
 			delete[] elementos[k];
-	cout << "Matrized 3" << endl;
 	delete []elementos;
-	cout << "Matrized 4" << endl;
 }
 
-void Matriz::imprimirMatriz()
-{
+void Matriz::imprimirMatriz(){
 	int k,w;
-
 		printf("\n");
 		for(k=0;k<getLinhas();k++)
 		{

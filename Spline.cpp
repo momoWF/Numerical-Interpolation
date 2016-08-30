@@ -46,10 +46,8 @@ Spline::Spline(const int &n,const double *x,const double *y) :
 
 Spline::~Spline(){
 	if (this == NULL) {
-		cout << "Splined 1" << endl;
 		if (A)
 			delete A;
-		cout << "Splined 2" << endl;
 	}
 }
 double Spline::S(const int &j, const double &x){
@@ -120,9 +118,9 @@ void Spline::triangularTridiagonal(){
 }
 
 void Spline::substituirTridiagonal(){
-	int c = this->c.size();
-	this->c[c] = A->getB(A->getLinhas()-1)/A->getElemento(A->getLinhas()-1,A->getColunas()-1);
+	int j = this->c.size()-1;
+	this->c[j] = A->getB(A->getLinhas()-1)/A->getElemento(A->getLinhas()-1,A->getColunas()-1);
 
-	for (c--; c >= 0; c--)
-		this->c[c] = (A->getB(c) - A->getElemento(c,c+1)*this->c[c+1])/A->getElemento(c,c);
+	for (j--; j >= 0; j--)
+		this->c[j] = (A->getB(j) - A->getElemento(j,j+1)*this->c[j+1])/A->getElemento(j,j);
 }
