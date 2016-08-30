@@ -8,9 +8,6 @@
 
 using namespace std;
 
-double maior(double A, double B);
-double menor(double A, double B);
-
 class Spline{
 	private:
 		vector<double> a;	//	Coeficientes de grau 0 -	y ou f(x)
@@ -22,12 +19,12 @@ class Spline{
 		Matriz *A;
 	public:
 		Spline(const int &n,const float *x,const float *y);
+		Spline(const int &n,const double *x,const double *y);
 		~Spline();
 		double S(const int &i, const double &x);
 		int localizar(const double x);
 		double interpolar(const double &x);
 
-		void calcularCoeficientesA();
 		void calcularCoeficientesB();
 		void calcularCoeficientesC();
 		void calcularCoeficientesD();

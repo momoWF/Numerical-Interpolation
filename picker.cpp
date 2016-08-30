@@ -6,20 +6,20 @@ void picker::Ortho(void){
 	//viewport[3] = height;
 
 	if (viewport[2] < viewport[3]){
-		gluOrtho2D(-4.0, 4.0, -4.0 * (GLfloat) viewport[3] / (GLfloat) viewport[2],
-			4.0 * viewport[3] / (GLfloat) viewport[2]);
+		gluOrtho2D(-4.0, 4.0, -4.0 * (GLdouble) viewport[3] / (GLdouble) viewport[2],
+			4.0 * viewport[3] / (GLdouble) viewport[2]);
 
 		side = 8.0f/viewport[2];
 	}else{
-		gluOrtho2D(-4.0 * (GLfloat) viewport[2] / (GLfloat) viewport[3],
-			4.0 * (GLfloat) viewport[2] / (GLfloat) viewport[3], -4.0, 4.0);
+		gluOrtho2D(-4.0 * (GLdouble) viewport[2] / (GLdouble) viewport[3],
+			4.0 * (GLdouble) viewport[2] / (GLdouble) viewport[3], -4.0, 4.0);
 
 		side = 8.0f/viewport[3];
 	}
 }
 
 //--------------------------------------------------------------//
-void picker::DrawString(GLfloat x, GLfloat y, char* format, ...){
+void picker::DrawString(GLdouble x, GLdouble y, char* format, ...){
 
 	va_list args;
 	char buffer[255], *s;
@@ -116,7 +116,7 @@ void picker::onMotion(GLint x, GLint y){
 }
 
 //--------------------------------------------------------------//
-void picker::MovePoint(GLuint n, GLfloat x, GLfloat y){
+void picker::MovePoint(GLuint n, GLdouble x, GLdouble y){
 	
 	Node<Point> *head, *tail, *currNode;
 
@@ -215,7 +215,7 @@ GLuint picker::GetSelectedPoint(GLint x, GLint y){
 }
 
 //--------------------------------------------------------------//
-void picker::Square(GLenum mode, GLfloat x, GLfloat y, GLfloat r){
+void picker::Square(GLenum mode, GLdouble x, GLdouble y, GLdouble r){
 
 	glBegin(mode);
 		glVertex2f(x-r*side,y-r*side);

@@ -4,7 +4,7 @@ Point::Point(void){
 	x = y = 0.0;
 };
 //=========================================================================//
-Point::Point(float _x, float _y){
+Point::Point(double _x, double _y){
 	x = _x;
 	y = _y;
 }

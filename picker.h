@@ -23,9 +23,9 @@ private:
 	GLdouble	projMatrix[16];
 
 	void		Ortho(void);
-	void		MovePoint(GLuint n, GLfloat x, GLfloat y);
-	void		DrawString(GLfloat x, GLfloat y, char* format, ...);
-	void		Square(GLenum mode, GLfloat x, GLfloat y, GLfloat r);
+	void		MovePoint(GLuint n, GLdouble x, GLdouble y);
+	void		DrawString(GLdouble x, GLdouble y, char* format, ...);
+	void		Square(GLenum mode, GLdouble x, GLdouble y, GLdouble r);
 
 public:
 

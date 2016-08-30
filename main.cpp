@@ -10,7 +10,7 @@
 
 /*
  * Universidade Federal do Vale do São Francisco
- * Trabalho de Cálculo Numérico - Integração Numérica
+ * Trabalho de Cálculo Numérico - Grupo 06 - Integração Numérica - 28/08/2016
  * Professor: Edson Leite Araújo
  * Alunos:	Rayssa Carvalho da Silva
  * 			Ricardo Figueiredo de Oliveira
@@ -37,45 +37,50 @@ GLint antialiasing		  = 1;
 
 picker Picker;
 
-float *xMtx,*yMtx;
+double *xMtx,*yMtx;
 int n;
 
 Polinomio *polinomio = NULL;
 Lagrange *lagrange = NULL;
 Spline *spline = NULL;
+
+double *xAnterior = NULL;
+double *yAnterior = NULL;
+
 int nAnteriorLin = 0;
 int nAnteriorL = 0;
 int nAnteriorS = 0;
 int seletor = 0;
 int N_PONTOS_NO_GRAFICO = 1000;
 
-float InterpolationLinearSystem(float *x,float *y, int N, float t);
-float InterpolationLagrange(float *x,float *y, int N, float t);
-float InterpolationSpline(float *x,float *y, int N, float t);
+double InterpolationLinearSystem(double *x,double *y, int N, double t);
+double InterpolationLagrange(double *x,double *y, int N, double t);
+double InterpolationSpline(double *x,double *y, int N, double t);
 void DrawInterpolationLinearSystem(void);
 void DrawInterpolationLagrange(void);
 void DrawInterpolationSpline(void);
+void menu_inicial();
 
 //===== Global Variables ===========================================//
 
-GLint		width		= 640;
-GLint		height		= 480;
+GLint		width		= 400;
+GLint		height		= 400;
 
 GLint		draw_yes	= 0;
 GLint		take_points = 1;
 
 //===================================================================//
-float InterpolationLinearSystem(float *x,float *y, int N, float t){
-	if (N == 1 || N != nAnteriorLin){
+double InterpolationLinearSystem(double *x,double *y, int N, double t){
+	if (N == 1 || x != xAnterior || y != yAnterior){
 		Matriz matriz(N,2);
 		for (int c = 0 ; c < N ; c++){
 			matriz.setElemento(c,0,x[c]);
 			matriz.setElemento(c,1,y[c]);
 		}
 		matriz.interpolar(&polinomio);
-		nAnteriorLin = N;
-		cout << endl;
-		cout << "Polinômio pela Forma Linear: ";
+		xAnterior = x;
+		yAnterior = y;
+		cout << endl << "Polinômio pela Forma Linear: ";
 		polinomio->imprimir();
 		cout << endl;
 	}
@@ -83,31 +88,36 @@ float InterpolationLinearSystem(float *x,float *y, int N, float t){
 	return polinomio->getValor(t);
 }
 
-float InterpolationLagrange(float *x,float *y, int N, float t)
-{
-	if(N==1 || N != nAnteriorL)
-	{
+double InterpolationLagrange(double *x,double *y, int N, double t){
+	//if(N==1 || x != xAnterior || y != yAnterior){
+		//xAnterior = x;
+		//yAnterior = y;
 		delete lagrange;
 		lagrange = new Lagrange(x,y,N);
 		nAnteriorL = N;
-	}
+	//}
 	return lagrange->interpolar((double) t);
 }
 
-float InterpolationSpline(float *x,float *y, int N, float t){
+double InterpolationSpline(double *x,double *y, int N, double t){
 	double resultado;
-	if (N == 1 || N != nAnteriorS){
-		nAnteriorS = N;
+	//if (N == 1 || x != xAnterior || y != yAnterior){
+		//xAnterior = x;
+		//yAnterior = y;
+		//cout << "Entrou delete" << endl;
 		delete spline;
+	cout << "int 1" << endl;
 		spline = new Spline(N,x,y);
-	}
+	//}
+		cout << "int 2" << endl;
 	resultado = spline->interpolar(t);
+	cout << "int 3" << endl;
 	return resultado;
 }
 //===================================================================//
 void DrawInterpolationLinearSystem(void){
-	float dt = ( xMtx[n-1] - xMtx[0] )/1000;
-	float x0,y0,x1,y1;
+	double dt = ( xMtx[n-1] - xMtx[0] )/1000;
+	double x0,y0,x1,y1;
 
 	x0 = xMtx[0];
 	y0 = yMtx[0];
@@ -133,8 +143,8 @@ void DrawInterpolationLinearSystem(void){
 }
 
 void DrawInterpolationLagrange(void){
-	float dt = ( xMtx[n-1] - xMtx[0] )/1000;
-	float x0,y0,x1,y1;
+	double dt = ( xMtx[n-1] - xMtx[0] )/1000;
+	double x0,y0,x1,y1;
 
 	x0 = xMtx[0];
 	y0 = yMtx[0];
@@ -159,8 +169,8 @@ void DrawInterpolationLagrange(void){
 	glLineWidth(1.0f);
 }
 void DrawInterpolationSpline(void){
-	float dt = ( xMtx[n-1] - xMtx[0] )/1000;
-	float x0,y0,x1,y1;
+	double dt = ( xMtx[n-1] - xMtx[0] )/1000;
+	double x0,y0,x1,y1;
 
 	x0 = xMtx[0];
 	y0 = yMtx[0];
@@ -192,13 +202,13 @@ int GetNumberOfPoints(void){
 	return list->getSize();
 }
 //===================================================================//
-float* GetXMatrix(void){
+double* GetXMatrix(void){
 
 	DoublyLinkedList<Point> *list = Picker.GetPoints();
 	Node<Point> *currNode = list->getHead();
 	int n = list->getSize();
 
-	float *x = new float[n];
+	double *x = new double[n];
 
 	if(!x){
 		printf("Insufficient memory for the X allocation!\n");
@@ -216,13 +226,13 @@ float* GetXMatrix(void){
 }
 
 //===================================================================//
-float* GetYMatrix(void){
+double* GetYMatrix(void){
 
 	DoublyLinkedList<Point> *list = Picker.GetPoints();
 	Node<Point> *currNode = list->getHead();
 	int n = list->getSize();
 
-	float *y = new float[n];
+	double *y = new double[n];
 
 	if(!y){
 		printf("Insufficient memory for the Y allocation!\n");
@@ -240,7 +250,7 @@ float* GetYMatrix(void){
 }
 
 //===================================================================//
-void UpdateXMatrix(float *x){
+void UpdateXMatrix(double *x){
 
 	DoublyLinkedList<Point> *list = Picker.GetPoints();
 	Node<Point> *currNode = list->getHead();
@@ -255,7 +265,7 @@ void UpdateXMatrix(float *x){
 }
 
 //=====================================================================//
-void UpdateYMatrix(float *y){
+void UpdateYMatrix(double *y){
 
 	DoublyLinkedList<Point> *list = Picker.GetPoints();
 	Node<Point> *currNode = list->getHead();
@@ -421,24 +431,12 @@ void myDisplayFunc(){
 // then starts glut's event processing loop
 
 int main (int argc, char ** argv){
-	cout << "Problema 1: Interpolação utilizando a Forma de Lagrange" << endl;
-	cout << "Problema 2: Interpolação utilizando Spline Cúbica Natural" << endl;
-	cout << "Extra (3): Interpolação utilizando Forma de Lagrange e Spline Cúbica Natural ao mesmo tempo" << endl;
-	cout << "Extra (4): Interpolação utilizando Sistema Linear - Força Bruta - Vandermonde Matrix" << endl;
-	cout << "Extra (5): Interpolação utilizando Todos acima" << endl;
-	do {
-		cout << "Digite o número do problema que deseja resolver: " ;
-		cin >> seletor;
-	} while (seletor > 5 || seletor < 1);
-
-	cout << "O polinômio da Forma de Lagrange tem linha de cor vermelha." << endl;
-	cout << "A Spline Cúbica Natural tem linha de cor azul." << endl;
-	cout << "O polinômio da Matri\ de Vandermonde tem linha de cor verde." << endl;
+	menu_inicial();
 
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(640, 480);
+	glutInitWindowSize(400, 400);
 	glutCreateWindow ("Calculo Numerico (c) Edson L. Araujo");
 
 	glutCreateMenu (MyRightMenu);
@@ -449,7 +447,7 @@ int main (int argc, char ** argv){
 	glutAddMenuEntry ("Antialiasing",9);
 	glutAddMenuEntry ("-Forma de Lagrange (vermelho)",21);
 	glutAddMenuEntry ("-Spline Cubica Natural (azul)",22);
-	glutAddMenuEntry ("-As duas ao mesmo tempo",23);
+	glutAddMenuEntry ("-As duas ao mesmo tempo (experimental)",23);
 
 	glutAttachMenu (GLUT_RIGHT_BUTTON);
 
@@ -466,3 +464,23 @@ int main (int argc, char ** argv){
 	return 0;
 }
 //======================================================================//
+void menu_inicial(){
+	cout << "Trabalho de Cálculo Numérico - Grupo 06 - Integração Numérica - 28/08/2016" << endl;
+	cout << "Alunos: 	Rayssa Carvalho da Silva" << endl <<
+ 			"		Ricardo Figueiredo de Oliveira" << endl <<
+ 			"		Ricardo Valério Teixeira de Medeiros Silva" << endl <<
+ 			"		Ruan de Medeiros Bahia" << endl;
+	cout << "Problema 1: Interpolação utilizando a Forma de Lagrange." << endl;
+	cout << "Problema 2: Interpolação utilizando Spline Cúbica Natural." << endl;
+	cout << "Extra (3): Interpolação utilizando Forma de Lagrange e Spline Cúbica Natural ao mesmo tempo" << endl;
+	cout << "Extra (4): Interpolação utilizando Sistema Linear - Força Bruta - Matriz de Vandermonde " << endl;
+	cout << "Extra (5): Interpolação utilizando Todos acima" << endl;
+	do {
+		cout << "Digite o número do problema que deseja resolver: " ;
+		cin >> seletor;
+	} while (seletor > 5 || seletor < 1);
+
+	cout << "O polinômio da Forma de Lagrange tem linha de cor vermelha." << endl;
+	cout << "A Spline Cúbica Natural tem linha de cor azul." << endl;
+	cout << "O polinômio da Matriz de Vandermonde tem linha de cor verde." << endl;
+}

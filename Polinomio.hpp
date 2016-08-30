@@ -12,7 +12,7 @@ class Polinomio{
 		double	*coeficientes;
 		int		grau;
 	public:
-		Polinomio(int grau);
+		Polinomio(int grau = 0);
 		~Polinomio();
 		void	setGrau(int novoGrau);
 		int		getGrau();

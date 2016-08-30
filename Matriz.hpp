@@ -24,6 +24,7 @@ class Matriz{
 		double *b;
 		Matriz(const int nLinhas, const int nColunas);
 		Matriz(int n,float*x,float*y);
+		Matriz(int n,double *x,double *y);
 		~Matriz();
 		void setB(int,double);
 		double getB(int);
@@ -45,7 +46,5 @@ class Matriz{
 		void copiaMatriz(Matriz*);
 		void copiaVetorMatriz(Matriz*);
 		void interpolar(Polinomio **px);
-
-
 };
 #endif

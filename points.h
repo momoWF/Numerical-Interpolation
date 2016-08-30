@@ -11,38 +11,38 @@
 class Point{
 private:
 
-	float x,y;
+	double x,y;
 
 public:
 	
 	Point(void);
-	Point(float _x, float _y);
+	Point(double _x, double _y);
 	Point(const Point& p);
 
 	inline Point& operator = (const Point &p);
 	inline Point  operator + (const Point &p);
-	inline Point  operator * (const float &k);
-	inline float  operator * (const Point &p);
+	inline Point  operator * (const double &k);
+	inline double  operator * (const Point &p);
 	inline Point  operator - (const Point &p) const;
-	inline Point  operator / (const float &k);
+	inline Point  operator / (const double &k);
 	inline Point& operator +=(const Point &p);
 	inline Point& operator -=(const Point &p);
-	inline Point& operator *=(const float &k);
+	inline Point& operator *=(const double &k);
 	inline bool	  operator ==(const Point &a) const;
 	inline bool   operator < (const Point &a) const;
-	inline float  operator [](unsigned int i) const;
-	inline float& operator [](unsigned int i);
-	inline void   LineTo(const Point& q,float *A,float *B,float *C);
+	inline double  operator [](unsigned int i) const;
+	inline double& operator [](unsigned int i);
+	inline void   LineTo(const Point& q,double *A,double *B,double *C);
 
-	friend inline Point operator * (const float &k,const Point &a);
+	friend inline Point operator * (const double &k,const Point &a);
 	friend inline Point operator + (const Point &a, const Point &b);
 
-	inline void set(const float &_x,const float &_y){
+	inline void set(const double &_x,const double &_y){
 		x = _x;
 		y = _y;
 	}
 
-	inline float lentgh(void){
+	inline double lentgh(void){
 		return sqrt(x*x + y*y);
 	}
 
@@ -73,21 +73,21 @@ inline Point Point::operator - (const Point &p) const {
 	return diff;
 }
 //======================================================================//
-inline Point Point::operator * (const float &k){
+inline Point Point::operator * (const double &k){
 	Point escdot(x*k, y*k);
 	return escdot;
 }
 //======================================================================//
-inline Point operator *(const float &k,const Point &a){
+inline Point operator *(const double &k,const Point &a){
 	Point mult = a;
 	return (mult*=k);
 }
 //======================================================================//
-inline float Point::operator * (const Point &p){
+inline double Point::operator * (const Point &p){
 	return (x*p[X] + y*p[Y]);
 }
 //======================================================================//
-inline Point Point::operator /(const float &k){
+inline Point Point::operator /(const double &k){
 	assert(k!=0);
 	Point div(x/k, y/k);
 	return (div);
@@ -107,7 +107,7 @@ inline Point& Point::operator -=(const Point &p){
 	return (*this);
 }
 //======================================================================//
-inline Point& Point::operator *=(const float &k){
+inline Point& Point::operator *=(const double &k){
 	x *= k;
 	y *= k;
 
@@ -132,7 +132,7 @@ inline bool Point::operator < (const Point &a) const{
 }
 
 //======================================================================//
-inline float Point::operator [] (unsigned int i) const {
+inline double Point::operator [] (unsigned int i) const {
 	assert(i<2);
 	switch(i){
 		case 0: return x; break;
@@ -141,7 +141,7 @@ inline float Point::operator [] (unsigned int i) const {
 	return x;
 }
 //======================================================================//
-inline float & Point::operator [] (unsigned int i) {
+inline double & Point::operator [] (unsigned int i) {
 	assert(i<2);
 	switch(i){
 		case 0: return x; break;
@@ -150,7 +150,7 @@ inline float & Point::operator [] (unsigned int i) {
 	return x;
 }
 //======================================================================//
-inline void Point::LineTo(const Point& q,float *A,float *B,float *C){
+inline void Point::LineTo(const Point& q,double *A,double *B,double *C){
 	*A = q[Y] - y;
 	*B = x - q[X];
 	*C = y*q[X] - q[Y]*x;

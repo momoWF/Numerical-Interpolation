@@ -66,7 +66,7 @@ Matriz::Matriz(const int nLinhas, const int nColunas){
 	}
 	else{
 		for(k=0; k < nLinhas;k++){
-			elementos[k] = (double *)malloc(sizeof(double)*nColunas);
+			elementos[k] = new double[nColunas];
 				if(!(elementos[k])){
 					printf("ERRO! Não foi possível alocar o vetor de elementos. (%d)",k+1);
 					exit(1);
@@ -92,11 +92,12 @@ Matriz::Matriz(int n,float*x,float*y):Matriz(n,2)
 }*/
 Matriz::~Matriz(){
 	int k;
-
+	cout << "Matrized 2" << endl;
 	for(k=0;k<getLinhas();k++)
-			delete [](elementos[k]); 
-				
+			delete[] elementos[k];
+	cout << "Matrized 3" << endl;
 	delete []elementos;
+	cout << "Matrized 4" << endl;
 }
 
 void Matriz::imprimirMatriz()
@@ -214,9 +215,9 @@ void Matriz::gaussJacobi(void)
 	int m,i,j,l1=0,l2=0;
 	double xk,menor,ERRO=10e-6;
 	double *y,*x,*p;
-	x=(double*)malloc(sizeof(double)*getLinhas());
-	y=(double*)malloc(sizeof(double)*getLinhas());
-	p=(double*)malloc(sizeof(double)*getLinhas());
+	x= new double[getLinhas()];
+	y=new double[getLinhas()];
+	p= new double[getLinhas()];
 	if(!y || !x || !p)
 	{
 		cout<<"ERRO!!";
@@ -309,9 +310,8 @@ void Matriz::resolveSistemaTriangular(char modo)
 {
 	int c,L,a;
 	double *y;
-	y=(double*)malloc(sizeof(double)*getLinhas());
-	if(!y)
-	{
+	y= new double[getLinhas()];
+	if(!y){
 		cout<<"ERRO!!";
 	}
 	for(int k=0; k<getLinhas(); k++)
@@ -347,7 +347,7 @@ void Matriz::resolveSistemaTriangular(char modo)
 	for(int k=0; k<getLinhas(); k++)
 			setB(k,y[k]);
 	
-	free(y);
+	delete []y;
 	
 	return;
 }
@@ -474,8 +474,7 @@ void Matriz::pivoteamento(int **x,char modo){
 	}
 		
 }
-void Matriz::copiaMatriz(Matriz *a)
-{
+void Matriz::copiaMatriz(Matriz *a){
 	Matriz *nova; 
 	if(getColunas()==a->getColunas() && getLinhas()==a->getLinhas())
 	{

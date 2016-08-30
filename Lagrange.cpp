@@ -15,7 +15,7 @@ Lagrange::Lagrange(Matriz *x){
 		}
 	}
 }
-Lagrange::Lagrange(float *x, float *y, int n){
+Lagrange::Lagrange(double *x, double *y, int n){
 	diferencas = new Matriz(n,n);
 	for(int l=0;l<diferencas->getLinhas();l++){
 		for(int c=0;c<diferencas->getColunas();c++){
