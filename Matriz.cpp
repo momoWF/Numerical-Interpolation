@@ -93,8 +93,9 @@ Matriz::Matriz(int n,float*x,float*y):Matriz(n,2)
 Matriz::~Matriz(){
 	int k;
 	for(k=0;k<getLinhas();k++)
-			delete[] elementos[k];
-	delete []elementos;
+		delete[](elementos[k]);
+	delete[] elementos;
+	delete[] b;
 }
 
 void Matriz::imprimirMatriz(){

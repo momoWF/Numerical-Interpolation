@@ -86,19 +86,19 @@ double InterpolationLinearSystem(double *x,double *y, int N, double t){
 
 double InterpolationLagrange(double *x,double *y, int N, double t){
 	//if (x != xAnterior || y != yAnterior){
-	delete lagrange;
-	lagrange = new Lagrange(x,y,N);
-	//xAnterior = x ,yAnterior = y;
+		delete lagrange;
+		lagrange = new Lagrange(x,y,N);
+		//xAnterior = x ,yAnterior = y;
 	//}
 	return lagrange->interpolar((double) t);
 }
 
 double InterpolationSpline(double *x,double *y, int N, double t){
 	//if (x != xAnterior || y != yAnterior){
-	double resultado;
-	delete spline;
-	spline = new Spline(N,x,y);
-	//xAnterior = x ,yAnterior = y;
+		double resultado;
+		delete spline;
+		spline = new Spline(N,x,y);
+		//xAnterior = x ,yAnterior = y;
 	//}
 	resultado = spline->interpolar(t);
 	return resultado;

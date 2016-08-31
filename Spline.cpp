@@ -45,10 +45,8 @@ Spline::Spline(const int &n,const double *x,const double *y) :
 }
 
 Spline::~Spline(){
-	if (this == NULL) {
-		if (A)
-			delete A;
-	}
+	if (this != NULL && A != NULL)
+		delete A;
 }
 double Spline::S(const int &j, const double &x){
 	if ((j >= 0) && (j < a.size())) {
@@ -84,7 +82,7 @@ int Spline::localizar(const double x){
 		else
 			jSuperior=jm;
 	}
-	return fmax(0,fmin(this->x.size()-2,jInferior));
+	return SMAX(0,SMIN(this->x.size()-2,jInferior));
 }
 
 void Spline::calcularCoeficientesB(){
@@ -123,4 +121,18 @@ void Spline::substituirTridiagonal(){
 
 	for (j--; j >= 0; j--)
 		this->c[j] = (A->getB(j) - A->getElemento(j,j+1)*this->c[j+1])/A->getElemento(j,j);
+}
+
+double SMAX(const double &a, const double &b){
+	if (a > b)
+		return a;
+	else
+		return b;
+}
+
+double SMIN(const double &a, const double &b){
+	if (a < b)
+		return a;
+	else
+		return b;
 }

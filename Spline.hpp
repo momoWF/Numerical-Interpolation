@@ -8,6 +8,9 @@
 
 using namespace std;
 
+double SMAX(const double &a, const double &b);
+double SMIN(const double &a, const double &b);
+
 class Spline{
 	private:
 		vector<double> a;	//	Coeficientes de grau 0 -	y ou f(x)
